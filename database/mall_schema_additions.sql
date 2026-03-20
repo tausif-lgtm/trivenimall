@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS stores (
   contact_person VARCHAR(100),
   mobile VARCHAR(20),
   email VARCHAR(150),
+  designation VARCHAR(100) DEFAULT NULL,
   is_active TINYINT(1) DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -29,6 +30,8 @@ CREATE TABLE IF NOT EXISTS sales (
   id INT AUTO_INCREMENT PRIMARY KEY,
   store_id INT NOT NULL,
   sale_date DATE NOT NULL,
+  cash_amount DECIMAL(12, 2) NOT NULL DEFAULT 0,
+  online_amount DECIMAL(12, 2) NOT NULL DEFAULT 0,
   revenue DECIMAL(12, 2) NOT NULL DEFAULT 0,
   notes VARCHAR(300),
   entered_by INT NOT NULL,
@@ -62,17 +65,40 @@ ALTER TABLE footfall ADD COLUMN IF NOT EXISTS gate_name VARCHAR(100) DEFAULT NUL
 ALTER TABLE footfall ADD COLUMN IF NOT EXISTS time_slot VARCHAR(20) DEFAULT NULL AFTER gate_name;
 
 -- ============================================================
+-- USERS TABLE EXTENSIONS
+-- ============================================================
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS designation VARCHAR(100) DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS store_id INT DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS role_extended ENUM('admin','staff','security','helpdesk','tenant') DEFAULT NULL;
+
+-- ============================================================
+-- SALES TABLE EXTENSIONS (if table already exists)
+-- ============================================================
+ALTER TABLE sales
+  ADD COLUMN IF NOT EXISTS cash_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS online_amount DECIMAL(12,2) NOT NULL DEFAULT 0;
+
+-- ============================================================
+-- FEEDBACK TABLE EXTENSIONS (if table already exists)
+-- ============================================================
+ALTER TABLE feedback
+  ADD COLUMN IF NOT EXISTS name VARCHAR(100) DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS rating_toilet TINYINT NOT NULL DEFAULT 5;
+
+-- ============================================================
 -- 4. CUSTOMER FEEDBACK (QR-based, public form - no login)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS feedback (
   id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) DEFAULT NULL,
   mobile VARCHAR(20) DEFAULT NULL,
-  visit_category ENUM('Food','Shopping','Entertainment') DEFAULT 'Shopping',
-  rating_overall TINYINT NOT NULL DEFAULT 3,
-  rating_cleanliness TINYINT NOT NULL DEFAULT 3,
-  rating_ac TINYINT NOT NULL DEFAULT 3,
-  rating_lighting TINYINT NOT NULL DEFAULT 3,
-  rating_ambience TINYINT NOT NULL DEFAULT 3,
+  rating_overall TINYINT NOT NULL DEFAULT 5,
+  rating_cleanliness TINYINT NOT NULL DEFAULT 5,
+  rating_ac TINYINT NOT NULL DEFAULT 5,
+  rating_lighting TINYINT NOT NULL DEFAULT 5,
+  rating_ambience TINYINT NOT NULL DEFAULT 5,
+  rating_toilet TINYINT NOT NULL DEFAULT 5,
   brands_requested TEXT DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

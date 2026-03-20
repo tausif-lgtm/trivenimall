@@ -42,7 +42,7 @@ start "Frontend :3200" cmd /k "cd /d "%~dp0frontend" && npm start"
 echo.
 echo ========================================
 echo  Localhost  : http://localhost:3200
-echo  Network    : http://192.168.11.23:3200
+echo  Network    : http://192.168.11.73:3200
 echo ========================================
 echo.
 echo  Wait 10 seconds then open browser.
